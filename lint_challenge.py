@@ -17,7 +17,7 @@ def extractBetween(line, start, end):
 
 def printList(List):
     for iterator in List:
-        print iterator
+        print "Lemma : "+ iterator[0]+ " Surface : "+ iterator[1]+ " Paradigm : "+iterator[2]
 
 def main():
     lines = []
@@ -30,15 +30,15 @@ def main():
         for match, y in groupby(myFile, key=lambda m:pattern.search(m)):
             if match:
                 lines.append(''.join(list(y)))
-   
+
     #Parse each line and extract information
     for line in lines:
         lemma = extractBetween(line, 'lm="', '">')
         surface = extractBetween(line, '<i>', '</i>')
         if surface == '':
             surface = extractBetween(line, '<b/>', '</l>')
+        surface = surface.replace("<b/>", " ")
         paradigm = extractBetween(line, '<par n="', '"/>')
-        print result
         temp = (lemma, surface, paradigm)
         result.append(temp)
     
