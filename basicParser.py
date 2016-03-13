@@ -4,6 +4,7 @@
 # To run : python3 filename.py monolingual.dix
 
 import sys
+import os
 from lxml import etree
 
 def getTree(fileName):
@@ -168,9 +169,23 @@ def generateEverything(tripletList, paradigmTable):
 
 
 if __name__ == '__main__':
+   
+    if len(sys.argv) != 2:
+        print ("Wrong number of arguments provided")
+        exit(1)
     
     fileName = sys.argv[1]
-    tree = getTree(fileName)
+    
+    if not os.path.isfile(fileName):
+        print ("Passed file does not exists")
+        exit(1)
+
+    try:
+        tree = getTree(fileName)
+    except:
+        print ("Not a valid monolingual dictionary")
+        exit(1)
+
     root = tree.getroot()
     
     words = tree.xpath('/dictionary/section/e')
