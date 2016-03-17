@@ -5,6 +5,7 @@
 
 import sys
 import os
+import platform
 from lxml import etree
 
 def getTree(fileName):
@@ -170,8 +171,14 @@ def generateEverything(tripletList, paradigmTable):
 
 if __name__ == '__main__':
    
+    pyVersion = platform.python_version()
+
+    if pyVersion < str(3.2):
+        print >> sys.stderr, 'Python version not supported'
+        print >> sys.stderr, 'Please use Python3.2 or higher'
+
     if len(sys.argv) != 2:
-        print ("Wrong number of arguments provided")
+        print ("To use : python3 <filename>.py <monolingualDix>.dix")
         exit(1)
     
     fileName = sys.argv[1]
