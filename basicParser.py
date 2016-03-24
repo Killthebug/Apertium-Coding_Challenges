@@ -52,6 +52,8 @@ def main():
             tempList = []
             
             for pairs in element :
+
+                #debug statement
                 
                 for tags in pairs:
                     
@@ -72,7 +74,10 @@ def main():
                         tempList.append(leftTag)
                         tempList.append(rightTag)
                         tempList.append(tuple(infoList))
-            
+
+                if 'n' in pairs.attrib:                 # This takes of nested paradigm entries
+                    tempList.append(pairs.attrib['n'])
+                
             dataList.append(tempList)
         paradigmTable[paradigm] = dataList
     
@@ -163,10 +168,56 @@ def generateEverything(tripletList, paradigmTable):
                             lemma = ""
             except IndexError:
                 lemma = ""
+
+            print ("Surface form : " + str(word) + " | Lexical unit: " + str(lemma) + " | Paradigm : "+paradigm)
+            
+            if len(form) == 4:                                                      # Checks for the presence of a nested paradigm
+                if len(base) > 0:                                                   # Prevents empty entries from moving ahead
+                    nestedPar(word, triplet[0], paradigmTable, form[3])             # Generated all possible forms
+            
+            lemma = triplet[0]
+
+def nestedPar(base, lemma, paradigmTable, paradigm):
+        """
+        This fucnction takes care of nested paradigms
+        and recursively generates all possible surface forms
+        and lexical forms for nested paradigms
+        """
+        
+        rawLemma = lemma
+        
+        try:
+            forms = paradigmTable[paradigm]
+        except KeyError:
+            forms = []
+
+        for form in forms:
+            try:
+                if form[0] == None:
+                    add = ""
+                else:
+                    add = form[0]
+            except IndexError:
+                add = ""
+            word = base+add
+            
+            try:
+                for prop in form[2]:
+                    if prop:
+                        try :
+                            lemma = lemma + "." +  prop
+                        except TypeError:
+                            lemma = ""
+            except IndexError:
+                lemma = ""
             
             print ("Surface form : " + str(word) + " | Lexical unit: " + str(lemma) + " | Paradigm : "+paradigm)
             
-            lemma = triplet[0]
+            if len(form) == 4:
+                if len(word) > 0:
+                    nestedPar(word, rawLemma, paradigmTable, form[3])
+           
+            lemma = rawLemma
 
 
 if __name__ == '__main__':
